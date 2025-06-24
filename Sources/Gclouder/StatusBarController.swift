@@ -1,7 +1,7 @@
 import Cocoa
 import LaunchAtLogin
 
-class StatusBarController: NSObject {
+class StatusBarController: NSObject, @unchecked Sendable {
     private var statusItem: NSStatusItem?
     private var menu: NSMenu!
     private var authChecker: AuthenticationChecker?
