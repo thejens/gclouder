@@ -49,7 +49,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-extension AppDelegate: @preconcurrency UNUserNotificationCenterDelegate {
+extension AppDelegate: UNUserNotificationCenterDelegate {
     // Handle notification while app is in foreground
     func userNotificationCenter(_ center: UNUserNotificationCenter, 
                               willPresent notification: UNNotification, 
@@ -59,13 +59,14 @@ extension AppDelegate: @preconcurrency UNUserNotificationCenterDelegate {
     }
     
     // Handle notification click
-    @MainActor
     func userNotificationCenter(_ center: UNUserNotificationCenter, 
                               didReceive response: UNNotificationResponse, 
                               withCompletionHandler completionHandler: @escaping () -> Void) {
         if response.notification.request.identifier == "auth-expired" {
             // Trigger authentication when notification is clicked
-            statusBarController?.performAuthentication()
+            Task { @MainActor in
+                statusBarController?.performAuthentication()
+            }
         }
         completionHandler()
     }
