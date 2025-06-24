@@ -1,7 +1,6 @@
 import Foundation
 import UserNotifications
 
-@MainActor
 protocol AuthenticationCheckerDelegate: AnyObject {
     func authenticationStatusChanged(isAuthenticated: Bool)
 }
@@ -28,7 +27,9 @@ class AuthenticationChecker {
                 
                 print("🔍 AuthenticationChecker: Status changed from \(previousStatus?.description ?? "nil") to \(isAuthenticated)")
                 
-                await delegate?.authenticationStatusChanged(isAuthenticated: isAuthenticated)
+                await MainActor.run {
+                    delegate?.authenticationStatusChanged(isAuthenticated: isAuthenticated)
+                }
                 
                 // Send notification only when auth expires (true -> false) and we're in app bundle
                 if previousStatus == true && isAuthenticated == false && isRunningFromAppBundle {

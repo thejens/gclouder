@@ -1,7 +1,6 @@
 import Cocoa
 import LaunchAtLogin
 
-@MainActor
 class StatusBarController: NSObject {
     private var statusItem: NSStatusItem?
     private var menu: NSMenu!
@@ -48,7 +47,7 @@ class StatusBarController: NSObject {
         
         // Setup timer to check every minute
         timer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] _ in
-            Task { @MainActor in
+            Task { @MainActor [weak self] in
                 self?.authChecker?.checkAuthentication()
             }
         }
@@ -153,7 +152,7 @@ class StatusBarController: NSObject {
     }
     
     private func updateAccountInfo(isAuthenticated: Bool) {
-        Task { @MainActor in
+        Task {
             let accountText: String
             
             if isAuthenticated {
@@ -166,9 +165,11 @@ class StatusBarController: NSObject {
                 accountText = "Account: Not authenticated"
             }
             
-            // Update account menu item (already on MainActor)
-            if let accountMenuItem = self.menu.item(withTag: 101) {
-                accountMenuItem.title = accountText
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                if let accountMenuItem = self.menu.item(withTag: 101) {
+                    accountMenuItem.title = accountText
+                }
             }
         }
     }
@@ -217,11 +218,13 @@ class StatusBarController: NSObject {
     }
     
     private func updateDebugMenu() {
-        // Already on MainActor since class is @MainActor
-        if let debugItem = self.menu.items.first(where: { $0.title == "Debug" }),
-           let debugSubmenu = debugItem.submenu,
-           let pathItem = debugSubmenu.item(withTag: 200) {
-            pathItem.title = GCloudHelper.getGCloudPathDescription()
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            if let debugItem = self.menu.items.first(where: { $0.title == "Debug" }),
+               let debugSubmenu = debugItem.submenu,
+               let pathItem = debugSubmenu.item(withTag: 200) {
+                pathItem.title = GCloudHelper.getGCloudPathDescription()
+            }
         }
     }
     
@@ -232,9 +235,11 @@ class StatusBarController: NSObject {
     }
     
     private func updateLaunchAtStartupMenuItem() {
-        // Already on MainActor since class is @MainActor
-        if let launchMenuItem = self.menu.item(withTag: 300) {
-            launchMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            if let launchMenuItem = self.menu.item(withTag: 300) {
+                launchMenuItem.state = LaunchAtLogin.isEnabled ? .on : .off
+            }
         }
     }
     
