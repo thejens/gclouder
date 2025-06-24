@@ -34,6 +34,28 @@ A lightweight macOS menu bar utility for managing Google Cloud authentication st
 3. Drag `GClouder.app` to your Applications folder
 4. Launch GClouder from your Applications folder
 
+#### macOS Security Warning
+
+When you first launch GClouder, macOS may show a security warning: *"Apple could not verify 'GClouder' is free of malware..."*
+
+This is normal for unsigned applications. To resolve this:
+
+**Method 1 (Recommended):**
+1. Right-click on `GClouder.app` in Applications
+2. Select "Open" from the context menu
+3. Click "Open" in the security dialog that appears
+
+**Method 2:**
+1. Go to System Preferences → Security & Privacy → General
+2. Click "Open Anyway" next to the GClouder message
+
+**Method 3 (Command Line):**
+```bash
+xattr -d com.apple.quarantine /Applications/GClouder.app
+```
+
+After using any of these methods once, GClouder will launch normally in the future.
+
 ### Option 2: Build from Source
 
 1. Clone the repository:
@@ -132,6 +154,18 @@ This will:
 - Try launching the app again from your Applications folder
 
 ## Development
+
+### Code Signing
+
+The Makefile includes automatic code signing to avoid security warnings:
+
+- **With Apple Developer Certificate**: If you have a "Developer ID Application" certificate installed, the build process will automatically sign the app with it
+- **Ad-hoc Signing**: If no developer certificate is found, the app will be signed with an ad-hoc signature (still reduces security warnings)
+
+To sign with your own certificate:
+1. Get an Apple Developer account and download your "Developer ID Application" certificate
+2. Install it in your Keychain
+3. Run `make install` or `make release` - it will automatically detect and use your certificate
 
 ### Project Structure
 ```
