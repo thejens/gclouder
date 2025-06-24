@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.0.2] - 2025-01-03
+
+### Fixed
+- Swift 5.9 concurrency compatibility for GitHub Actions CI/CD
+- Eliminated all build warnings with proper Sendable conformance
+- Fixed @MainActor usage for older Swift versions
+- Improved thread safety with explicit DispatchQueue.main.async calls
+- Fixed Timer capture lists for concurrency safety
+
+### Technical Improvements
+- Added @unchecked Sendable conformance to StatusBarController
+- Replaced @preconcurrency syntax for broader Swift version compatibility
+- Enhanced concurrency patterns for CI/CD environment compatibility
+
 ## [0.0.1] - 2025-01-03
 
 ### Added
@@ -41,5 +55,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ad-hoc code signing for local distribution
 - Support for Developer ID signing when available
 
-[Unreleased]: https://github.com/thejens/gclouder/compare/v0.0.1...HEAD
+[Unreleased]: https://github.com/thejens/gclouder/compare/v0.0.2...HEAD
+[0.0.2]: https://github.com/thejens/gclouder/compare/v0.0.1...v0.0.2
 [0.0.1]: https://github.com/thejens/gclouder/releases/tag/v0.0.1 
